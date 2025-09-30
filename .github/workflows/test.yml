@@ -38,7 +38,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Setup uv
         uses: astral-sh/setup-uv@v1
-      - name: Sync dependencies with uv (include redis extras)
-        run: uv sync --extra redis
+      - name: Sync dependencies with uv (include test and redis extras)
+        run: uv sync --extra test --extra redis
       - name: Run tests with uv
         run: uv run pytest -q tests/
