@@ -213,21 +213,26 @@ async def daily_data():
 
 ### 安装开发依赖
 ```bash
-poetry install --with dev
+uv sync --extra test
+# 如需安装后端支持，可选择性同步对应 extras：
+# Redis:      uv sync --extra redis
+# Memcached:  uv sync --extra memcached
+# DynamoDB:   uv sync --extra dynamodb
+# 全部后端:   uv sync --extra all
 ```
 
 ### 运行测试
 ```bash
-poetry run pytest
+uv run pytest
 ```
 
 ### 运行示例
 ```bash
 # 基本示例
-poetry run python examples/basic_usage.py
+uv run python examples/basic_usage.py
 
 # FastAPI示例
-poetry run python examples/fastapi_example.py
+uv run python examples/fastapi_example.py
 ```
 
 ## 许可证
