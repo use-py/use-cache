@@ -20,6 +20,7 @@ jobs:
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v1
+
       - name: Build project for distribution with uvx
         run: uvx --from build python -m build
 
@@ -43,4 +44,5 @@ jobs:
       - name: Publish to PyPI
         env:
           UV_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
         run: uvx --from twine twine upload --non-interactive -u __token__ -p $UV_PYPI_TOKEN dist/*
