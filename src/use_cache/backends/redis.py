@@ -47,8 +47,16 @@ class RedisBackend(Backend):
     async def clear(self, namespace: Optional[str] = None, key: Optional[str] = None) -> int:
         """Clear cache by namespace or specific key."""
         if namespace:
-            lua = f"for i, name in ipairs(redis.call('KEYS', '{namespace}:*')) do redis.call('DEL', name); end"
-            return await self.redis.eval(lua, numkeys=0)  # type: ignore[union-attr,no-any-return]
+            # Lua script returns number of deleted keys to avoid None
+            lua = (
+                f"local keys = redis.call('KEYS', '{namespace}:*'); "
+                f"local count = 0; "
+                f"for i, name in ipairs(keys) do count = count + redis.call('DEL', name); end; "
+                f"return count"
+            )
+            res = await self.redis.eval(lua, numkeys=0)  # type: ignore[union-attr]
+            # Some clients may return None if nothing deleted; normalize to int
+            return int(res or 0)
         elif key:
             return await self.redis.delete(key)  # type: ignore[union-attr]
         return 0
