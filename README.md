@@ -89,15 +89,17 @@ from use_cache.integrations.fastapi import cache
 
 app = FastAPI()
 
-@app.on_event("startup")
-async def startup():
-    cache_manager = CacheManager()
-    await cache_manager.init(
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialize cache on startup
+    CacheManager.init(
         backend=InMemoryBackend(),
-        coder=JsonCoder(),
-        prefix="api:",
-        expire=300
+        coder=JsonCoder,
+        prefix="fastapi:",
+        expire=300  # 5 minutes
     )
+    yield
+    # Cleanup on shutdown (if needed)
 
 @app.get("/users/{user_id}")
 @cache(expire=60)
