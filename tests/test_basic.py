@@ -255,7 +255,7 @@ class TestCacheDecorator:
 class TestRedisBackend:
     """Test RedisBackend functionality when redis server is available."""
 
-    @pytest_asyncio.fixture(scope="class")
+    @pytest_asyncio.fixture(scope="function")
     async def redis_client(self):
         try:
             from redis.asyncio import Redis
